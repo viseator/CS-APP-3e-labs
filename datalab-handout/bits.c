@@ -292,7 +292,6 @@ unsigned float_neg(unsigned uf) {
  */
 unsigned float_i2f(int x) {
   // printf("%d\n",x);
-  int raw = x;
   int i = 1;
   int nega=0;
   unsigned temp;
@@ -344,5 +343,20 @@ unsigned float_i2f(int x) {
  *   Rating: 4
  */
 unsigned float_twice(unsigned uf) {
-  return 2;
+  int E = ((uf&0x7FFFFFFF) >> 23) ;
+  int newe;
+  // printf("%d\n",E);
+  if((uf&0x7F800000) == 0x7F800000 ){
+    return uf;
+  }
+  if((uf|0x807FFFFF)==0x807FFFFF){
+    if(!(uf&0x007FFFFF)){
+      return uf;
+    }
+    return (uf<<1)|(uf&0x80000000);
+  }
+  newe = E - 127+1;
+  newe = (newe+127) << 23;
+  uf = (uf&0x807FFFFF) | newe;
+  return uf;
 }
