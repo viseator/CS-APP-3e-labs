@@ -275,7 +275,11 @@ int ilog2(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
- return 2;
+  unsigned result = uf ^ 0x80000000;
+  if((uf&0x7F800000) == 0x7F800000 && (uf&0x007FFFFF)){
+    result = uf;
+  }
+  return result;
 }
 /* 
  * float_i2f - Return bit-level equivalent of expression (float) x
