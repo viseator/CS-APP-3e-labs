@@ -226,7 +226,7 @@ int divpwr2(int x, int n) {
  *   Rating: 2
  */
 int negate(int x) {
-  return 2;
+  return ~x+1;
 }
 /* 
  * isPositive - return 1 if x > 0, return 0 otherwise 
@@ -236,7 +236,7 @@ int negate(int x) {
  *   Rating: 3
  */
 int isPositive(int x) {
-  return 2;
+  return !((x&(1<<31)) | !x);
 }
 /* 
  * isLessOrEqual - if x <= y  then return 1, else return 0 
@@ -246,7 +246,12 @@ int isPositive(int x) {
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  return 2;
+  int t = 1 << 31;
+  int xp = !((x&(t)));
+  int yp = !((y&(t)));
+  int p = x+~y+1;
+  // printf("%d %d %d\n",xp,yp,p);
+  return (!!((!xp & yp) | ((p&(t))|!p))) & (!(xp & !yp));
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
