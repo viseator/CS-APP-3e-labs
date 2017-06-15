@@ -291,7 +291,46 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_i2f(int x) {
-  return 2;
+  // printf("%d\n",x);
+  int raw = x;
+  int i = 1;
+  int nega=0;
+  unsigned temp;
+  unsigned result;
+  
+  if(x&0x80000000){
+    nega = 1;
+    x = ~x+1;
+  }
+  if(x == 0){
+    return 0;
+  }
+  while((x & 0x80000000)!=0x80000000){
+    ++i;
+    x <<= 1;
+  }
+  result = x << 1;
+  temp = result;
+  result >>= 9;
+  if(nega){
+    result |= 0x80000000;
+  }else{
+    result &= 0x7FFFFFFF;
+  }
+  i = (32 - i)+127;
+  result = (result & 0x807FFFFF) | (i<<23);
+  if((temp & 0x00000100) == 0x00000100){
+    if(temp&0x000000FF){
+      return result + 1;
+    }else{
+      if(result & 1){
+        return result + 1;
+      }else{
+        return result;
+      }
+    }
+  }
+  return result;
 }
 /* 
  * float_twice - Return bit-level equivalent of expression 2*f for
