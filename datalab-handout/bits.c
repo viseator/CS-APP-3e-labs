@@ -1,8 +1,8 @@
-/* 
- * CS:APP Data Lab 
- * 
+/*
+ * CS:APP Data Lab
+ *
  * viseator viseator@gmail.com
- * 
+ *
  * bits.c - Source file with your solutions to the Lab.
  *          This is the file you will hand in to your instructor.
  *
@@ -10,7 +10,7 @@
  * compiler. You can still use printf for debugging without including
  * <stdio.h>, although you might get a compiler warning. In general,
  * it's not good practice to ignore compiler warnings, but in this
- * case it's OK.  
+ * case it's OK.
  */
 
 #if 0
@@ -129,19 +129,16 @@ NOTES:
  *      the correct answers.
  */
 
-
 #endif
-/* 
- * bitAnd - x&y using only ~ and | 
+/*
+ * bitAnd - x&y using only ~ and |
  *   Example: bitAnd(6, 5) = 4
  *   Legal ops: ~ |
  *   Max ops: 8
  *   Rating: 1
  */
-int bitAnd(int x, int y) {
-  return ~((~x)|(~y));
-}
-/* 
+int bitAnd(int x, int y) { return ~((~x) | (~y)); }
+/*
  * getByte - Extract byte n from word x
  *   Bytes numbered from 0 (LSB) to 3 (MSB)
  *   Examples: getByte(0x12345678,1) = 0x56
@@ -149,19 +146,17 @@ int bitAnd(int x, int y) {
  *   Max ops: 6
  *   Rating: 2
  */
-int getByte(int x, int n) {
-  return (x>>(n<<3))&0xff;
-}
-/* 
+int getByte(int x, int n) { return (x >> (n << 3)) & 0xff; }
+/*
  * logicalShift - shift x to the right by n, using a logical shift
  *   Can assume that 0 <= n <= 31
  *   Examples: logicalShift(0x87654321,4) = 0x08765432
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 20
- *   Rating: 3 
+ *   Rating: 3
  */
 int logicalShift(int x, int n) {
-  return ((x&~(1<<31)) >> n) | ((!!(x&(1<<31)))<<(32+~n));
+    return ((x & ~(1 << 31)) >> n) | ((!!(x & (1 << 31))) << (32 + ~n));
 }
 /*
  * bitCount - returns count of number of 1's in word
@@ -171,30 +166,44 @@ int logicalShift(int x, int n) {
  *   Rating: 4
  */
 int bitCount(int x) {
-  return 2;
+    // referenced :
+    // https://stackoverflow.com/questions/3815165/how-to-implement-bitcount-using-only-bitwise-operators
+    int mask1 = 0x55;
+    int mask2 = 0x33;
+    int mask3 = 0x0F;
+    int result = 0;
+    mask1 = mask1 | (mask1 << 8);
+    mask1 = mask1 | (mask1 << 16);
+    mask2 = mask2 | (mask2 << 8);
+    mask2 = mask2 | (mask2 << 16);
+    mask3 = mask3 | (mask3 << 8);
+    mask3 = mask3 | (mask3 << 16);
+
+    result = (x & mask1) + ((x >> 1) & mask1);
+    result = (result & mask2) + ((result >> 2) & mask2);
+    result = (result & mask3) + ((result >> 4) & mask3);
+    return (result + (result >> 8) + (result >> 16) + (result >> 24)) & 0xff;
 }
-/* 
+/*
  * bang - Compute !x without using !
  *   Examples: bang(3) = 0, bang(0) = 1
  *   Legal ops: ~ & ^ | + << >>
  *   Max ops: 12
- *   Rating: 4 
+ *   Rating: 4
  */
 int bang(int x) {
-  int a = 1 << 31;
-  return 1 & (1 ^ (((a & x) | (a & (~x + 1))) >> 31));
+    int a = 1 << 31;
+    return 1 & (1 ^ (((a & x) | (a & (~x + 1))) >> 31));
 }
-/* 
- * tmin - return minimum two's complement integer 
+/*
+ * tmin - return minimum two's complement integer
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 4
  *   Rating: 1
  */
-int tmin(void) {
-  return 1<<31;
-}
-/* 
- * fitsBits - return 1 if x can be represented as an 
+int tmin(void) { return 1 << 31; }
+/*
+ * fitsBits - return 1 if x can be represented as an
  *  n-bit, two's complement integer.
  *   1 <= n <= 32
  *   Examples: fitsBits(5,3) = 0, fitsBits(-4,3) = 1
@@ -203,10 +212,10 @@ int tmin(void) {
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
-  // return !((~(((1<<31)>>(33+~n)<<1)) & x) ^ x) & !((x<<(33+~n))>>(33+~n)^x);
-  return !(((x<<(33+~n))>>(33+~n))^x);
+    // return !((~(((1<<31)>>(33+~n)<<1)) & x) ^ x) & !((x<<(33+~n))>>(33+~n)^x);
+    return !(((x << (33 + ~n)) >> (33 + ~n)) ^ x);
 }
-/* 
+/*
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
  *  Round toward zero
  *   Examples: divpwr2(15,1) = 7, divpwr2(-33,4) = -2
@@ -217,42 +226,38 @@ int fitsBits(int x, int n) {
 int divpwr2(int x, int n) {
     // return (x>>n)+((((x<<1)>>n)&1)&(!!(x&(1<<31))));
     int temp = 1 << 31;
-    return (x>>n)+((!!((~((temp>>(32+~n))))&x))&(!!(x&temp)));
+    return (x >> n) + ((!!((~((temp >> (32 + ~n)))) & x)) & (!!(x & temp)));
 }
-/* 
- * negate - return -x 
+/*
+ * negate - return -x
  *   Example: negate(1) = -1.
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 5
  *   Rating: 2
  */
-int negate(int x) {
-  return ~x+1;
-}
-/* 
- * isPositive - return 1 if x > 0, return 0 otherwise 
+int negate(int x) { return ~x + 1; }
+/*
+ * isPositive - return 1 if x > 0, return 0 otherwise
  *   Example: isPositive(-1) = 0.
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 8
  *   Rating: 3
  */
-int isPositive(int x) {
-  return !((x&(1<<31)) | !x);
-}
-/* 
- * isLessOrEqual - if x <= y  then return 1, else return 0 
+int isPositive(int x) { return !((x & (1 << 31)) | !x); }
+/*
+ * isLessOrEqual - if x <= y  then return 1, else return 0
  *   Example: isLessOrEqual(4,5) = 1.
  *   Legal ops: ! ~ & ^ | + << >>
  *   Max ops: 24
  *   Rating: 3
  */
 int isLessOrEqual(int x, int y) {
-  int t = 1 << 31;
-  int xp = !((x&(t)));
-  int yp = !((y&(t)));
-  int p = x+~y+1;
-  // printf("%d %d %d\n",xp,yp,p);
-  return (!!((!xp & yp) | ((p&(t))|!p))) & (!(xp & !yp));
+    int t = 1 << 31;
+    int xp = !((x & (t)));
+    int yp = !((y & (t)));
+    int p = x + ~y + 1;
+    // printf("%d %d %d\n",xp,yp,p);
+    return (!!((!xp & yp) | ((p & (t)) | !p))) & (!(xp & !yp));
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
@@ -261,10 +266,8 @@ int isLessOrEqual(int x, int y) {
  *   Max ops: 90
  *   Rating: 4
  */
-int ilog2(int x) {
-  return 2;
-}
-/* 
+int ilog2(int x) { return 2; }
+/*
  * float_neg - Return bit-level equivalent of expression -f for
  *   floating point argument f.
  *   Both the argument and result are passed as unsigned int's, but
@@ -276,13 +279,13 @@ int ilog2(int x) {
  *   Rating: 2
  */
 unsigned float_neg(unsigned uf) {
-  unsigned result = uf ^ 0x80000000;
-  if((uf&0x7F800000) == 0x7F800000 && (uf&0x007FFFFF)){
-    result = uf;
-  }
-  return result;
+    unsigned result = uf ^ 0x80000000;
+    if ((uf & 0x7F800000) == 0x7F800000 && (uf & 0x007FFFFF)) {
+        result = uf;
+    }
+    return result;
 }
-/* 
+/*
  * float_i2f - Return bit-level equivalent of expression (float) x
  *   Result is returned as unsigned int, but
  *   it is to be interpreted as the bit-level representation of a
@@ -292,47 +295,47 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_i2f(int x) {
-  // printf("%d\n",x);
-  int i = 1;
-  int nega=0;
-  unsigned temp;
-  unsigned result;
-  
-  if(x&0x80000000){
-    nega = 1;
-    x = ~x+1;
-  }
-  if(x == 0){
-    return 0;
-  }
-  while((x & 0x80000000)!=0x80000000){
-    ++i;
-    x <<= 1;
-  }
-  result = x << 1;
-  temp = result;
-  result >>= 9;
-  if(nega){
-    result |= 0x80000000;
-  }else{
-    result &= 0x7FFFFFFF;
-  }
-  i = (32 - i)+127;
-  result = (result & 0x807FFFFF) | (i<<23);
-  if((temp & 0x00000100) == 0x00000100){
-    if(temp&0x000000FF){
-      return result + 1;
-    }else{
-      if(result & 1){
-        return result + 1;
-      }else{
-        return result;
-      }
+    // printf("%d\n",x);
+    int i = 1;
+    int nega = 0;
+    unsigned temp;
+    unsigned result;
+
+    if (x & 0x80000000) {
+        nega = 1;
+        x = ~x + 1;
     }
-  }
-  return result;
+    if (x == 0) {
+        return 0;
+    }
+    while ((x & 0x80000000) != 0x80000000) {
+        ++i;
+        x <<= 1;
+    }
+    result = x << 1;
+    temp = result;
+    result >>= 9;
+    if (nega) {
+        result |= 0x80000000;
+    } else {
+        result &= 0x7FFFFFFF;
+    }
+    i = (32 - i) + 127;
+    result = (result & 0x807FFFFF) | (i << 23);
+    if ((temp & 0x00000100) == 0x00000100) {
+        if (temp & 0x000000FF) {
+            return result + 1;
+        } else {
+            if (result & 1) {
+                return result + 1;
+            } else {
+                return result;
+            }
+        }
+    }
+    return result;
 }
-/* 
+/*
  * float_twice - Return bit-level equivalent of expression 2*f for
  *   floating point argument f.
  *   Both the argument and result are passed as unsigned int's, but
@@ -344,20 +347,20 @@ unsigned float_i2f(int x) {
  *   Rating: 4
  */
 unsigned float_twice(unsigned uf) {
-  int E = ((uf&0x7FFFFFFF) >> 23) ;
-  int newe;
-  // printf("%d\n",E);
-  if((uf&0x7F800000) == 0x7F800000 ){
-    return uf;
-  }
-  if((uf|0x807FFFFF)==0x807FFFFF){
-    if(!(uf&0x007FFFFF)){
-      return uf;
+    int E = ((uf & 0x7FFFFFFF) >> 23);
+    int newe;
+    // printf("%d\n",E);
+    if ((uf & 0x7F800000) == 0x7F800000) {
+        return uf;
     }
-    return (uf<<1)|(uf&0x80000000);
-  }
-  newe = E - 127+1;
-  newe = (newe+127) << 23;
-  uf = (uf&0x807FFFFF) | newe;
-  return uf;
+    if ((uf | 0x807FFFFF) == 0x807FFFFF) {
+        if (!(uf & 0x007FFFFF)) {
+            return uf;
+        }
+        return (uf << 1) | (uf & 0x80000000);
+    }
+    newe = E - 127 + 1;
+    newe = (newe + 127) << 23;
+    uf = (uf & 0x807FFFFF) | newe;
+    return uf;
 }
