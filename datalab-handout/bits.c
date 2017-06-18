@@ -266,7 +266,24 @@ int isLessOrEqual(int x, int y) {
  *   Max ops: 90
  *   Rating: 4
  */
-int ilog2(int x) { return 2; }
+int ilog2(int x) {
+    int result = 0;
+    int b4 = !!(x >> 16);
+    int b3 = 0;
+    int b2 = 0;
+    int b1 = 0;
+    int b0 = 0;
+    result = b4 << 4;
+    b3 = !!(x >> (8 + result));
+    result = result | (b3 << 3);
+    b2 = !!(x >> (4 + result));
+    result = result | (b2 << 2);
+    b1 = !!(x >> (2 + result));
+    result = result | (b1 << 1);
+    b0 = !!(x >> (1 + result));
+    result = result | b0;
+    return result;
+}
 /*
  * float_neg - Return bit-level equivalent of expression -f for
  *   floating point argument f.
