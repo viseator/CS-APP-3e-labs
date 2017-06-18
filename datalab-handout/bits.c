@@ -156,7 +156,8 @@ int getByte(int x, int n) { return (x >> (n << 3)) & 0xff; }
  *   Rating: 3
  */
 int logicalShift(int x, int n) {
-    return ((x & ~(1 << 31)) >> n) | ((!!(x & (1 << 31))) << (32 + ~n));
+    int a = 1 << 31;
+    return ((x & ~a) >> n) | ((!!(x & a)) << (32 + ~n));
 }
 /*
  * bitCount - returns count of number of 1's in word
@@ -191,10 +192,7 @@ int bitCount(int x) {
  *   Max ops: 12
  *   Rating: 4
  */
-int bang(int x) {
-    int a = 1 << 31;
-    return 1 & (1 ^ (((a & x) | (a & (~x + 1))) >> 31));
-}
+int bang(int x) { return 1 & (1 ^ ((x | (~x + 1)) >> 31)); }
 /*
  * tmin - return minimum two's complement integer
  *   Legal ops: ! ~ & ^ | + << >>
@@ -212,8 +210,8 @@ int tmin(void) { return 1 << 31; }
  *   Rating: 2
  */
 int fitsBits(int x, int n) {
-    // return !((~(((1<<31)>>(33+~n)<<1)) & x) ^ x) & !((x<<(33+~n))>>(33+~n)^x);
-    return !(((x << (33 + ~n)) >> (33 + ~n)) ^ x);
+    int a = 33 + ~n;
+    return !((x << a >> a) ^ x);
 }
 /*
  * divpwr2 - Compute x/(2^n), for 0 <= n <= 30
@@ -224,9 +222,10 @@ int fitsBits(int x, int n) {
  *   Rating: 2
  */
 int divpwr2(int x, int n) {
-    // return (x>>n)+((((x<<1)>>n)&1)&(!!(x&(1<<31))));
-    int temp = 1 << 31;
-    return (x >> n) + ((!!((~((temp >> (32 + ~n)))) & x)) & (!!(x & temp)));
+    int a = 1 << 31;
+    int isALessThanZero = !!(x & a);
+    int isXHasMoreBit = (!!((~(a >> (32 + ~n))) & x));
+    return (x >> n) + (isXHasMoreBit & isALessThanZero);
 }
 /*
  * negate - return -x
@@ -253,11 +252,10 @@ int isPositive(int x) { return !((x & (1 << 31)) | !x); }
  */
 int isLessOrEqual(int x, int y) {
     int t = 1 << 31;
-    int xp = !((x & (t)));
-    int yp = !((y & (t)));
+    int xp = !(x & t);
+    int yp = !(y & t);
     int p = x + ~y + 1;
-    // printf("%d %d %d\n",xp,yp,p);
-    return (!!((!xp & yp) | ((p & (t)) | !p))) & (!(xp & !yp));
+    return (!!(((!xp) & yp) | ((p & t) | !p))) & (!(xp & (!yp)));
 }
 /*
  * ilog2 - return floor(log base 2 of x), where x > 0
@@ -364,20 +362,11 @@ unsigned float_i2f(int x) {
  *   Rating: 4
  */
 unsigned float_twice(unsigned uf) {
-    int E = ((uf & 0x7FFFFFFF) >> 23);
-    int newe;
-    // printf("%d\n",E);
-    if ((uf & 0x7F800000) == 0x7F800000) {
-        return uf;
+    unsigned result = uf;
+    if ((uf & 0x7f800000) == 0) {
+        result = ((uf & 0x007fffff) << 1) | (uf & 0x80000000);
+    } else if ((uf & 0x7f800000) != 0x7f800000) {
+        result = uf + 0x00800000;
     }
-    if ((uf | 0x807FFFFF) == 0x807FFFFF) {
-        if (!(uf & 0x007FFFFF)) {
-            return uf;
-        }
-        return (uf << 1) | (uf & 0x80000000);
-    }
-    newe = E - 127 + 1;
-    newe = (newe + 127) << 23;
-    uf = (uf & 0x807FFFFF) | newe;
-    return uf;
+    return result;
 }
