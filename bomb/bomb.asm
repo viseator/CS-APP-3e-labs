@@ -758,7 +758,7 @@ Disassembly of section .rela.plt:
 
 Disassembly of section .init:
 
-0000000000400ac0 <_init>:
+0000000000400ac0 <_init>: 
   400ac0:	48 83 ec 08          	sub    $0x8,%rsp
   400ac4:	e8 f3 01 00 00       	callq  400cbc <call_gmon_start>
   400ac9:	48 83 c4 08          	add    $0x8,%rsp
@@ -928,7 +928,7 @@ Disassembly of section .text:
   400cbc:	48 83 ec 08          	sub    $0x8,%rsp
   400cc0:	48 8b 05 19 23 20 00 	mov    0x202319(%rip),%rax        # 602fe0 <__gmon_start__>
   400cc7:	48 85 c0             	test   %rax,%rax
-  400cca:	74 02                	je     400cce <call_gmon_start+0x12>
+  400cca:	74 02                	je     400cce <call_gmon_start+0x12> //file input or std input ?
   400ccc:	ff d0                	callq  *%rax
   400cce:	48 83 c4 08          	add    $0x8,%rsp
   400cd2:	c3                   	retq   
@@ -1015,7 +1015,7 @@ Disassembly of section .text:
   400d9e:	90                   	nop
   400d9f:	90                   	nop
 
-0000000000400da0 <main>:
+0000000000400da0 <main>:  //main here
   400da0:	53                   	push   %rbx
   400da1:	83 ff 01             	cmp    $0x1,%edi
   400da4:	75 10                	jne    400db6 <main+0x16>
@@ -1148,25 +1148,35 @@ Disassembly of section .text:
   400f6f:	77 3c                	ja     400fad <phase_3+0x6a>
   400f71:	8b 44 24 08          	mov    0x8(%rsp),%eax
   400f75:	ff 24 c5 70 24 40 00 	jmpq   *0x402470(,%rax,8)
+  x = 0
   400f7c:	b8 cf 00 00 00       	mov    $0xcf,%eax
   400f81:	eb 3b                	jmp    400fbe <phase_3+0x7b>
+  x = 2
   400f83:	b8 c3 02 00 00       	mov    $0x2c3,%eax
   400f88:	eb 34                	jmp    400fbe <phase_3+0x7b>
+  x = 3
   400f8a:	b8 00 01 00 00       	mov    $0x100,%eax
   400f8f:	eb 2d                	jmp    400fbe <phase_3+0x7b>
+  x = 4
   400f91:	b8 85 01 00 00       	mov    $0x185,%eax
   400f96:	eb 26                	jmp    400fbe <phase_3+0x7b>
+  x = 5
   400f98:	b8 ce 00 00 00       	mov    $0xce,%eax
   400f9d:	eb 1f                	jmp    400fbe <phase_3+0x7b>
+  x = 6
   400f9f:	b8 aa 02 00 00       	mov    $0x2aa,%eax
   400fa4:	eb 18                	jmp    400fbe <phase_3+0x7b>
+  x = 7
   400fa6:	b8 47 01 00 00       	mov    $0x147,%eax
   400fab:	eb 11                	jmp    400fbe <phase_3+0x7b>
+
   400fad:	e8 88 04 00 00       	callq  40143a <explode_bomb>
   400fb2:	b8 00 00 00 00       	mov    $0x0,%eax
   400fb7:	eb 05                	jmp    400fbe <phase_3+0x7b>
+  x = 1
   400fb9:	b8 37 01 00 00       	mov    $0x137,%eax
   400fbe:	3b 44 24 0c          	cmp    0xc(%rsp),%eax
+  
   400fc2:	74 05                	je     400fc9 <phase_3+0x86>
   400fc4:	e8 71 04 00 00       	callq  40143a <explode_bomb>
   400fc9:	48 83 c4 18          	add    $0x18,%rsp
