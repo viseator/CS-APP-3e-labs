@@ -310,7 +310,6 @@ unsigned float_neg(unsigned uf) {
  *   Rating: 4
  */
 unsigned float_i2f(int x) {
-    // printf("%d\n",x);
     int i = 1;
     int nega = 0;
     unsigned temp;

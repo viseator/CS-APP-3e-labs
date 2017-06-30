@@ -1176,8 +1176,8 @@ Disassembly of section .text:
   x = 1
   400fb9:	b8 37 01 00 00       	mov    $0x137,%eax
   400fbe:	3b 44 24 0c          	cmp    0xc(%rsp),%eax
-  
   400fc2:	74 05                	je     400fc9 <phase_3+0x86>
+  
   400fc4:	e8 71 04 00 00       	callq  40143a <explode_bomb>
   400fc9:	48 83 c4 18          	add    $0x18,%rsp
   400fcd:	c3                   	retq   
