@@ -1,23 +1,10 @@
- movq %rax,%rdi movl %eax,%edi
 
- popq %rax
-
- movl %eax,%edx
-
- movl %eax,%edx + two byte nop
-
- two byte nop 
-
- movl %ecx,%esi
-
- movl %ecx,%esi + two byte nop
-
- movl %edx,%ecx + two byte nop
-
- movq %rsp,%rax movl %esp,%eax
-
- 
+test.o:     file format elf64-x86-64
 
 
+Disassembly of section .text:
 
-
+0000000000000000 <.text>:
+   0:	48 c7 c7 90 dc 61 55 	mov    $0x5561dc90,%rdi
+   7:	48 c7 c4 88 dc 61 55 	mov    $0x5561dc88,%rsp
+   e:	c3                   	retq   
